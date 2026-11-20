@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Richelieu Liveaboard + Bangkok</title>
+<style>
+  :root{
+    --ink:#1d2433; --muted:#6b7385; --line:#e6e8ee; --bg:#f6f7fa; --card:#fff;
+    --navy:#14365c; --sea:#1f7a8c; --intl:#e7f1fb; --dom:#fdf0e8; --total:#fdf5e1;
+    --ok:#e5f4e4; --okText:#25683a;
+    --a1:#3b5bdb; --a2:#e8590c; --a3:#7048e8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:0 18px 56px}
+  header{position:relative;overflow:hidden;color:#e8f6ff;padding:46px 0 38px;margin-bottom:28px;
+    background:
+      radial-gradient(600px 220px at 85% -10%,rgba(0,229,255,.22),transparent 70%),
+      radial-gradient(500px 200px at 0% 120%,rgba(124,77,255,.20),transparent 70%),
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px) 0 0/28px 28px,
+      #07090f;
+    border-bottom:1px solid rgba(0,229,255,.35)}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#00e5ff,#7c4dff,transparent)}
+  header .eyebrow{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;color:#00e5ff;opacity:1;letter-spacing:.18em}
+  header .eyebrow::before{content:"> ";opacity:.7}
+  header h1{font-size:34px;letter-spacing:-.01em;background:linear-gradient(90deg,#ffffff 0%,#a8f0ff 55%,#b9a3ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(0,229,255,.15)}
+  header .fact{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.35);color:#cfefff;border-radius:6px}
+  header .fact b{color:#fff}
+  header .wrap{padding-bottom:0}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;margin:0 0 8px}
+  h1{font-size:30px;line-height:1.2;margin:0 0 14px;font-weight:700}
+  .facts{display:flex;flex-wrap:wrap;gap:8px}
+  .fact{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 12px;font-size:13px}
+  .fact b{font-weight:600}
+  h2{font-size:20px;margin:36px 0 14px;font-weight:700}
+  h2 .sub{font-weight:400;color:var(--muted);font-size:14px;margin-left:6px}
+
+  /* option cards */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(20,30,50,.04)}
+  .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c)}
+  .card .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);padding:3px 8px;border-radius:6px;margin-bottom:8px}
+  .card h3{margin:0 0 2px;font-size:18px}
+  .card .dates{color:var(--muted);font-size:13px;margin-bottom:12px}
+  .price{font-size:26px;font-weight:700;letter-spacing:-.01em}
+  .price small{font-size:12px;font-weight:500;color:var(--muted);margin-left:4px}
+  .stats{list-style:none;padding:0;margin:14px 0 0;border-top:1px solid var(--line)}
+  .stats li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .stats li span:first-child{color:var(--muted)}
+  .stats li span:last-child{font-weight:600;text-align:right}
+  .a1{--c:var(--a1)} .a2{--c:var(--a2)} .a3{--c:var(--a3)}
+
+  /* tables */
+  .tbl{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+  .tbl th,.tbl td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl thead th{background:#f0f2f6;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .tbl tr:last-child td{border-bottom:none}
+  .num{text-align:right!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .intl td{background:var(--intl)} .dom td{background:var(--dom)}
+  .tot td{background:var(--total);font-weight:700}
+  .ok{background:var(--ok);color:var(--okText);font-weight:600;border-radius:6px;padding:2px 7px;font-size:12.5px;white-space:nowrap}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;margin-left:6px;vertical-align:1px}
+  .pill.i{background:#d3e6fa;color:#1c4f86} .pill.d{background:#fbdcc8;color:#8a3b0c}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-right:7px;vertical-align:1px}
+
+  /* option detail */
+  .opt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin-top:18px;border-top:4px solid var(--c)}
+  .opt h3{margin:0;font-size:19px}
+  .opt .head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+  .opt .head .price{font-size:20px}
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+  .meta div{background:var(--bg);border-radius:10px;padding:10px 12px}
+  .meta div span{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .meta div b{font-size:14px}
+  .timeline{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+  .timeline li{background:#f0f2f6;border-radius:999px;padding:4px 11px}
+  .timeline li.sea{background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c);font-weight:600}
+  .timeline .arr{background:none;padding:0;color:#b0b6c3}
+  .two{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+  .label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 8px}
+  .note{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+  a{color:var(--sea)}
+  a.gf{color:inherit;text-decoration:none;border-bottom:1px dashed #9aa3b5}
+  a.gf:hover{color:var(--sea);border-bottom-color:var(--sea)}
+  footer{color:var(--muted);font-size:12px;margin-top:36px;border-top:1px solid var(--line);padding-top:14px}
+
+  @media (max-width:760px){
+    header h1{font-size:26px}
+    .cards{grid-template-columns:1fr}
+    .two{grid-template-columns:1fr}
+    .meta{grid-template-columns:repeat(2,1fr)}
+    .opt{padding:18px}
+  }
+
+/* Black & Gold theme (fonts unchanged) */
+header{background:radial-gradient(700px 260px at 50% -40%,rgba(212,175,55,.25),transparent 70%),linear-gradient(rgba(212,175,55,.04) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,rgba(212,175,55,.04) 1px,transparent 1px) 0 0/28px 28px,#0a0a0a!important;border-bottom:1px solid #b8963e!important}
+header::after{background:linear-gradient(90deg,transparent,#d4af37,transparent)!important}
+header .eyebrow{color:#d4af37!important}
+header h1{background:linear-gradient(90deg,#f5e6b8,#d4af37,#f5e6b8)!important;-webkit-background-clip:text!important;background-clip:text!important;text-shadow:0 0 28px rgba(212,175,55,.15)!important}
+header .fact{background:rgba(212,175,55,.06)!important;border:1px solid #6e5a24!important;color:#e9d9a6!important}
+header .fact b{color:#f5e6b8!important}
+:root{--a1:#b8963e;--a2:#8c6d2c;--a3:#5b4a1e;--sea:#9a7a2e}
+body{background:#f7f5f0}
+
+/* sticky jump nav */
+.jump{position:sticky;top:0;z-index:20;background:rgba(247,245,240,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-top:-28px;margin-bottom:24px}
+.jump .wrap{display:flex;gap:8px;overflow-x:auto;padding:10px 18px;scrollbar-width:none}
+.jump .wrap::-webkit-scrollbar{display:none}
+.jump a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-size:13px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 13px}
+section.opt,h2{scroll-margin-top:64px}
+/* comparison table: sticky first column when scrolling */
+.scroll .tbl{min-width:640px}
+.scroll .tbl td:first-child,.scroll .tbl th:first-child{position:sticky;left:0;background:#fff;z-index:1}
+.scroll .tbl thead th:first-child{background:#f0f2f6}
+@media (max-width:640px){
+  .wrap{padding-left:14px;padding-right:14px}
+  header{padding:26px 0 22px}
+  header h1{font-size:24px!important;margin-bottom:12px}
+  header .fact{font-size:11px;padding:4px 9px}
+  .jump .wrap{padding:9px 14px}
+  h2{font-size:18px;margin:26px 0 10px}
+  .card{padding:16px}
+  .stats li{font-size:14px;padding:9px 0}
+  .opt{padding:16px;border-radius:14px}
+  .opt .head{flex-direction:column;align-items:flex-start;gap:2px}
+  .meta{grid-template-columns:1fr 1fr;gap:8px}
+  .meta div b{font-size:13px}
+  .timeline{font-size:12px}
+  /* flight rows become stacked mini-cards */
+  .two .tbl tr{display:grid;grid-template-columns:1fr auto;align-items:center;border-bottom:1px solid var(--line)}
+  .two .tbl tr:last-child{border-bottom:none}
+  .two .tbl td{border-bottom:none;padding:9px 12px}
+  .two .tbl td:empty{display:none}
+  .two .tbl tr.intl td:nth-child(2),.two .tbl tr.dom td:nth-child(2){grid-column:1/-1;grid-row:2;padding-top:0;font-size:13.5px}
+  .two .tbl td.num{font-size:15px;font-weight:600}
+  a.gf{display:inline-block;padding:2px 0}
+  .tbl{font-size:13.5px}
+  footer{font-size:11.5px}
+}
+  details.also{margin-top:28px}
+  details.also summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #b8963e;border-radius:12px;background:rgba(184,150,62,.08)}
+  details.also summary::-webkit-details-marker{display:none}
+  details.also summary h2{margin:0;font-size:17px}
+  details.also .chev{flex:none;font-size:13px;font-weight:600;color:#b8963e;white-space:nowrap}
+  details.also .chev::after{content:" ▾";display:inline-block;transition:transform .2s}
+  details.also[open] .chev::after{transform:rotate(180deg)}
+  details.also .chev .c{display:none} details.also[open] .chev .o{display:none} details.also[open] .chev .c{display:inline}
+  details.also[open] summary{border-radius:12px 12px 0 0;margin-bottom:12px}
+  .cmp{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .cmp table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .cmp th,.cmp td{padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px;text-align:left;vertical-align:top}
+  .cmp tr:last-child td{border-bottom:0}
+  .cmp th:first-child,.cmp td:first-child{width:30%;color:var(--muted);font-weight:400}
+  .cmp td+td{font-weight:600}
+  .cmp th.a2,.cmp th.a3{border-top:4px solid var(--c)}
+  .cmp th a{color:inherit;text-decoration:none;font-size:15px}
+  .cmp th .t{display:block;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--c);margin-top:3px}
+  @media(max-width:640px){.cmp th,.cmp td{padding:8px 8px;font-size:13px}.cmp th:first-child,.cmp td:first-child{width:28%}}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 16px}
+  .tab{appearance:none;cursor:pointer;font:inherit;font-size:16px;font-weight:700;color:#e9d9a6;background:rgba(212,175,55,.06);border:1.5px solid #6e5a24;border-radius:12px;padding:12px 10px;text-align:center;transition:all .15s}
+  .tab span{display:block;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+  .tab em{display:block;font-style:normal;font-size:12.5px;font-weight:700;margin-top:6px}
+  .tab small{display:block;font-size:11px;font-weight:500;line-height:1.35;opacity:.8;margin-top:3px}
+  .tab.on{background:linear-gradient(180deg,#d4af37,#b8963e);color:#0a0a0a;border-color:#d4af37;box-shadow:0 0 18px rgba(212,175,55,.35)}
+  .tab:not(.on):hover{border-color:#b8963e;color:#fff}
+  .panel[hidden],.facts[hidden],nav[hidden]{display:none!important}
+  figure.cabin{margin:0 0 16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+  figure.cabin img{display:block;width:100%;max-height:300px;object-fit:cover}
+  figure.cabin figcaption{font-size:12px;color:var(--muted);padding:6px 10px}
+  .cmp th.a1{border-top:4px solid var(--c)}
+  .cmp3 th:first-child,.cmp3 td:first-child{width:22%}
+  @media(max-width:640px){.cmp3 th,.cmp3 td{padding:7px 6px;font-size:12px}.tab{font-size:13.5px;padding:10px 6px}.tab span{font-size:9.5px;letter-spacing:.06em}}
+  @media(max-width:640px){.tabs{grid-template-columns:1fr 1fr}}
+  .cmp1 th:first-child,.cmp1 td:first-child{width:40%}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Richelieu Liveaboard + Bangkok</h1>
+    <div class="tabs" role="tablist">
+      <button role="tab" class="tab" data-t="4" aria-selected="false"><span>Before Christmas</span>Dec 18 – Dec 27</button>
+      <button role="tab" class="tab on" data-t="1" aria-selected="true"><span>Christmas + New Year</span>Dec 24 – Jan 3</button>
+      <button role="tab" class="tab" data-t="2" aria-selected="false"><span>New Year</span>Dec 30 – Jan 10</button>
+      <button role="tab" class="tab" data-t="3" aria-selected="false"><span>January</span>Jan 8 – Jan 17</button>
+    </div>
+    <div class="facts" data-p="4" hidden>
+      <span class="fact"><b>Dec 18 – Dec 27</b></span>
+      <span class="fact">Leave: <b>Dec 21–24 (4 days)</b></span>
+      <span class="fact">Holidays: <b>Dec 25</b></span>
+      <span class="fact">Total: <b>9 days off</b></span>
+    </div>
+    <div class="facts" data-p="1">
+      <span class="fact"><b>Dec 24 – Jan 3</b></span>
+      <span class="fact">Leave: <b>Dec 28–30 (3 days)</b></span>
+      <span class="fact">Holidays: <b>Dec 25 · Dec 31 · Jan 1</b></span>
+      <span class="fact">Total: <b>10 days off</b></span>
+    </div>
+    <div class="facts" data-p="2" hidden>
+      <span class="fact"><b>Dec 30 – Jan 10</b></span>
+      <span class="fact">Leave: <b>Jan 4–8 (5 days)</b></span>
+      <span class="fact">Holidays: <b>Dec 31 · Jan 1</b></span>
+      <span class="fact">Total: <b>11 days off</b></span>
+    </div>
+    <div class="facts" data-p="3" hidden>
+      <span class="fact"><b>Jan 8 – Jan 17</b></span>
+      <span class="fact">Leave: <b>Jan 11–15 (5 days)</b></span>
+      <span class="fact">Holidays: <b>none</b></span>
+      <span class="fact">Total: <b>9 days off</b></span>
+    </div>
+  </div>
+</header>
+<nav class="jump" data-p="4" hidden><div class="wrap"><a href="#d1" class="a3"><span class="dot"></span>Dolphin Queen</a></div></nav>
+<nav class="jump" data-p="1"><div class="wrap"><a href="#a2" class="a2"><span class="dot"></span>Sawasdee Fasai</a><a href="#a3" class="a3"><span class="dot"></span>Dolphin Queen</a></div></nav>
+<nav class="jump" data-p="2" hidden><div class="wrap"><a href="#b1" class="a2"><span class="dot"></span>Bunmee 4</a><a href="#b2" class="a3"><span class="dot"></span>Lapat</a></div></nav>
+<nav class="jump" data-p="3" hidden><div class="wrap"><a href="#c1" class="a1"><span class="dot"></span>Camic</a><a href="#c2" class="a2"><span class="dot"></span>Bunmee 4</a><a href="#c3" class="a3"><span class="dot"></span>Deep Andaman Q.</a></div></nav>
+
+<div class="wrap">
+<div class="panel" data-p="4" hidden>
+  <h2>One option <span class="sub">only boat with a double cabin left</span></h2>
+  <div class="cmp cmp1"><table>
+    <thead><tr><th></th><th class="a3"><a href="#d1"><b>Dolphin Queen</b></a><span class="t">Most dives · shared bathroom</span></th></tr></thead>
+    <tbody>
+      <tr><td>Boat</td><td>Dec 20 – 25</td></tr>
+      <tr><td>Days / dives</td><td>6D5N · up to 18</td></tr>
+      <tr><td>Rating</td><td>9.2 (124 reviews)</td></tr>
+      <tr><td>Bangkok</td><td>Dec 19 + Dec 26</td></tr>
+      <tr><td>Bangkok hours</td><td>~47h (35 + 12)</td></tr>
+      <tr><td>Richelieu Rock</td><td>Not stated</td></tr>
+      <tr><td>Night dives</td><td>4</td></tr>
+      <tr><td>Nitrox</td><td>220 THB / tank</td></tr>
+      <tr><td>Last dive → flight</td><td>~33h ✓</td></tr>
+    </tbody>
+  </table></div>
+
+  <section class="opt a3" id="d1">
+    <div class="head"><h3>Dolphin Queen <span style="font-weight:400;color:var(--muted);font-size:14px">— before Christmas</span></h3><div class="price">49,497<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Main deck · double · 2 left</b></div>
+      <div><span>Board</span><b>Dec 20</b></div>
+      <div><span>Off</span><b>Dec 25 · pier ~15:00</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/dolphin-queen">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/cabin/8602/double-bed-main.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Main deck double cabin · shared bathroom" loading="lazy"><figcaption>Main deck double cabin · shared bathroom · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Dec 19</li><li class="arr">→</li><li>Phuket Dec 20</li><li class="arr">→</li><li class="sea">Boat Dec 20–25</li><li class="arr">→</li><li>Phuket Dec 26</li><li class="arr">→</li><li>Bangkok Dec 26</li><li class="arr">→</li><li>Home Dec 27</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Dec 18 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202026-12-18%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">3,929</td></tr>
+            <tr class="dom"><td>Dec 20 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202026-12-20%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 10:20→11:50 ↗</a></td><td class="num">2,949</td></tr>
+            <tr class="dom"><td>Dec 26 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202026-12-26%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:40→21:10 ↗</a></td><td class="num">1,856</td></tr>
+            <tr class="intl"><td>Dec 27 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202026-12-27%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">5,378</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">14,112</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Main deck, double)</td><td class="num">29,825</td></tr>
+            <tr><td>Nitrox (~18 tanks)</td><td class="num">3,960</td></tr>
+            <tr><td>Park fee</td><td class="num">1,600</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">35,385</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <details class="also" id="also4"><summary><h2>Also checked <span class="sub">no double cabin · Dec 19 – 23</span></h2><span class="chev"><span class="o">Show</span><span class="c">Hide</span></span></summary>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Boat</th><th>Dates checked</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Deep Andaman Queen</td><td>Dec 20</td><td>Queen cabin full (1 space left elsewhere)</td></tr>
+      <tr><td>Lucky Marine</td><td>Dec 21</td><td>Master full; bunk with double lower bed only (28,941)</td></tr>
+      <tr><td>Pawara</td><td>Dec 21</td><td>Only 1 space left</td></tr>
+      <tr><td>Sawasdee Fasai</td><td>Dec 21</td><td>Full</td></tr>
+      <tr><td>Aqua</td><td>Dec 19</td><td>Full</td></tr>
+      <tr><td>Mandarin Queen 9 · Blue Dolphin · Raga</td><td>Dec 19</td><td>Full</td></tr>
+      <tr><td>Explorer · Andaman</td><td>Dec 20–22</td><td>Full</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </details>
+  <footer>
+    Cabins and prices from liveaboard.com booking pages and flights from Google Flights, checked Nov 10, 2026. Fares and availability change quickly. Prices per person in TWD (1 THB ≈ 1 TWD); hotels, food, checked bags, tips and the 1,500 THB airport transfer not included.
+  </footer>
+</div>
+<div class="panel" data-p="1">
+
+  <h2>Two options <span class="sub">tap a name for details</span></h2>
+  <div class="cmp"><table>
+    <thead><tr><th></th><th class="a2"><a href="#a2"><b>Sawasdee Fasai</b></a><span class="t">NYE in Bangkok</span></th><th class="a3"><a href="#a3"><b>Dolphin Queen</b></a><span class="t">Cheapest · most dives</span></th></tr></thead>
+    <tbody>
+      <tr><td>Boat</td><td>Dec 25 – 29</td><td>Dec 26 – 31</td></tr>
+      <tr><td>Days / dives</td><td>5D4N · ~14</td><td>6D5N · up to 18</td></tr>
+      <tr><td>Rating</td><td>9.1 (308 reviews)</td><td>9.2 (124 reviews)</td></tr>
+      <tr><td>Bangkok</td><td>Dec 30 – Jan 2</td><td>Dec 25 + Jan 1–2</td></tr>
+      <tr><td>Bangkok hours</td><td>~94h (12 + 82)</td><td>~68h (35 + 33)</td></tr>
+      <tr><td>Richelieu Rock</td><td>4 dives</td><td>Not stated</td></tr>
+      <tr><td>Night dives</td><td>3</td><td>4</td></tr>
+      <tr><td>Nitrox</td><td>Free</td><td>220 THB / tank</td></tr>
+      <tr><td>Last dive → flight</td><td>~34h ✓</td><td>~36h ✓</td></tr>
+    </tbody>
+  </table></div>
+
+
+  <!-- Sawasdee Fasai -->
+  <section class="opt a2" id="a2">
+    <div class="head"><h3>Sawasdee Fasai <span style="font-weight:400;color:var(--muted);font-size:14px">— NYE in Bangkok</span></h3><div class="price">61,827<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Standard · double · 1 left</b></div>
+      <div><span>Board</span><b>Dec 25 · pickup 16:45</b></div>
+      <div><span>Off</span><b>Dec 29 · pier 15:00</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/sawasdee-fasai">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/boat/5568/cabins/8573/Standard_Cabin_1_Double_Bed.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Standard cabin · double bed" loading="lazy"><figcaption>Standard cabin · double bed · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Dec 24</li><li class="arr">→</li><li>Phuket Dec 25</li><li class="arr">→</li><li class="sea">Boat Dec 25–29</li><li class="arr">→</li><li>Bangkok Dec 30–Jan 2</li><li class="arr">→</li><li>Home Jan 3</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Dec 24 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202026-12-24%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">5,140</td></tr>
+            <tr class="dom"><td>Dec 25 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202026-12-25%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 10:20→11:50 ↗</a></td><td class="num">3,581</td></tr>
+            <tr class="dom"><td>Dec 30 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202026-12-30%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 21:05→22:35 ↗</a></td><td class="num">2,942</td></tr>
+            <tr class="intl"><td>Jan 3 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-03%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">7,886</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">19,549</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Standard, double)</td><td class="num">40,778</td></tr>
+            <tr><td>Nitrox</td><td class="num">Free</td></tr>
+            <tr><td>Park fee</td><td class="num">1,500</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">42,278</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dolphin Queen -->
+  <section class="opt a3" id="a3">
+    <div class="head"><h3>Dolphin Queen <span style="font-weight:400;color:var(--muted);font-size:14px">— cheapest, most dives</span></h3><div class="price">56,432<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Upper Deck · double · 1 left</b></div>
+      <div><span>Board</span><b>Dec 26 · Khao Lak by 16:00</b></div>
+      <div><span>Off</span><b>Dec 31 · pier ~15:00</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/dolphin-queen">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/cabin/8603/double-bed-upper.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Upper deck double cabin" loading="lazy"><figcaption>Upper deck double cabin · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Dec 24–25</li><li class="arr">→</li><li>Khao Lak Dec 26</li><li class="arr">→</li><li class="sea">Boat Dec 26–31</li><li class="arr">→</li><li>NYE Phuket</li><li class="arr">→</li><li>Bangkok Jan 1–2</li><li class="arr">→</li><li>Home Jan 3</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Dec 24 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202026-12-24%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">5,140</td></tr>
+            <tr class="dom"><td>Dec 26 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202026-12-26%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:40→11:15 ↗</a></td><td class="num">3,581</td></tr>
+            <tr class="dom"><td>Jan 1 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-01%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai AirAsia 22:20→23:45 ↗</a></td><td class="num">3,462</td></tr>
+            <tr class="intl"><td>Jan 3 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-03%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">7,886</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">20,069</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Upper Deck, double)</td><td class="num">30,803</td></tr>
+            <tr><td>Nitrox (18 × 220 THB)</td><td class="num">3,960</td></tr>
+            <tr><td>Park fee</td><td class="num">1,600</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">36,363</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Airport ↔ Khao Lak transfer 1,500 THB, not included.</p>
+      </div>
+    </div>
+  </section>
+
+  <details class="also" id="also"><summary><h2>Also checked <span class="sub">no double cabin · Dec 21 – Jan 3</span></h2><span class="chev"><span class="o">Show</span><span class="c">Hide</span></span></summary>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Boat</th><th>Dates checked</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Aqua</td><td>Dec 29</td><td>Full (sold out Nov 10)</td></tr>
+      <tr><td>Pawara</td><td>Dec 25, Dec 30</td><td>Double cabins full</td></tr>
+      <tr><td>Seatopia</td><td>Dec 29, Jan 3</td><td>Double cabin full</td></tr>
+      <tr><td>Mandarin Queen 9</td><td>Jan 3</td><td>Queen cabins full</td></tr>
+      <tr><td>Gentle Giant</td><td>Dec 24, Dec 30</td><td>Double cabins full</td></tr>
+      <tr><td>Manta Queen 1</td><td>Dec 24, Dec 31</td><td>Double cabin full</td></tr>
+      <tr><td>Manta Queen 3</td><td>Dec 25</td><td>Double cabin full</td></tr>
+      <tr><td>Manta Queen 7</td><td>Jan 2</td><td>Double cabin full</td></tr>
+      <tr><td>Manta Queen 8</td><td>Dec 24</td><td>Double cabin full (Dec 31 has one, back Jan 5)</td></tr>
+      <tr><td>Krishna 2 / Krishna 3</td><td>Dec 23, Dec 29</td><td>Double and VIP full</td></tr>
+      <tr><td>Lucky Marine</td><td>Dec 26</td><td>Master (double) full</td></tr>
+      <tr><td>Thailand Master</td><td>Dec 22, Dec 30</td><td>Double cabins full</td></tr>
+      <tr><td>Thailand Aggressor</td><td>Jan 2</td><td>Queen cabins full</td></tr>
+      <tr><td>Marco Polo, Manta Queen 5 &amp; 6</td><td>Dec 22 – Jan 1</td><td>Bunk beds only</td></tr>
+      <tr><td>Camic, Deep Andaman Queen, Smiling Seahorse</td><td>Dec 24 – Dec 31</td><td>Fully booked</td></tr>
+      <tr><td>Bavaria, The Junk</td><td>—</td><td>No departures in this window</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </details>
+
+  <footer>
+    Cabins and prices from liveaboard.com booking pages and flights from Google Flights, checked Nov 9–10, 2026. Fares and availability change quickly. Prices per person in TWD (1 THB ≈ 1 TWD); hotels, food, checked bags and tips not included.
+  </footer>
+</div>
+<div class="panel" data-p="2" hidden>
+  <h2>Two options <span class="sub">tap a name for details</span></h2>
+  <div class="cmp"><table>
+    <thead><tr><th></th><th class="a2"><a href="#b1"><b>Bunmee 4</b></a><span class="t">Richelieu ×3 · most dives</span></th><th class="a3"><a href="#b2"><b>Lapat</b></a><span class="t">Cheapest · most Bangkok</span></th></tr></thead>
+    <tbody>
+      <tr><td>Boat</td><td>Jan 3 – 7</td><td>Jan 3 – 6</td></tr>
+      <tr><td>Days / dives</td><td>5D4N · ~15</td><td>4D3N · ~11</td></tr>
+      <tr><td>Rating</td><td>8.6 (40 reviews)</td><td>8.8 (8 reviews)</td></tr>
+      <tr><td>Bangkok</td><td>Dec 31 – Jan 2 + Jan 9</td><td>Dec 31 – Jan 1 + Jan 8–9</td></tr>
+      <tr><td>Bangkok hours</td><td>~120h (84 + 36)</td><td>~125h (66 + 59)</td></tr>
+      <tr><td>Richelieu Rock</td><td>3 dives</td><td>Not stated</td></tr>
+      <tr><td>Night dives</td><td>2</td><td>1</td></tr>
+      <tr><td>Nitrox</td><td>200 THB / tank</td><td>300 THB / tank</td></tr>
+      <tr><td>Last dive → flight</td><td>~29.5h ✓</td><td>~31.5h ✓</td></tr>
+    </tbody>
+  </table></div>
+
+  <section class="opt a2" id="b1">
+    <div class="head"><h3>Bunmee 4 <span style="font-weight:400;color:var(--muted);font-size:14px">— Richelieu ×3</span></h3><div class="price">62,479<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Horizon · double · 4 left</b></div>
+      <div><span>Board</span><b>Jan 3 · Khao Lak 19:30</b></div>
+      <div><span>Off</span><b>Jan 7 · Khao Lak 18:30</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/bunmee-4">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/boat/6223/cabins/10670/liveaboard-bunmee-4--horizon-double.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Horizon double cabin" loading="lazy"><figcaption>Horizon double cabin · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Dec 31–Jan 2</li><li class="arr">→</li><li>Phuket Jan 3</li><li class="arr">→</li><li class="sea">Boat Jan 3–7</li><li class="arr">→</li><li>Phuket Jan 8</li><li class="arr">→</li><li>Bangkok Jan 9</li><li class="arr">→</li><li>Home Jan 10</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Dec 30 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202026-12-30%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">7,217</td></tr>
+            <tr class="dom"><td>Jan 3 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202027-01-03%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 10:20→11:50 ↗</a></td><td class="num">3,907</td></tr>
+            <tr class="dom"><td>Jan 8 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-08%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:35→21:05 ↗</a></td><td class="num">2,340</td></tr>
+            <tr class="intl"><td>Jan 10 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-10%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">3,866</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">17,330</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Horizon, double)</td><td class="num">39,749</td></tr>
+            <tr><td>Nitrox (~15 tanks)</td><td class="num">3,000</td></tr>
+            <tr><td>Fuel surcharge</td><td class="num">1,400</td></tr>
+            <tr><td>Park fee</td><td class="num">1,000</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">45,149</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt a3" id="b2">
+    <div class="head"><h3>Lapat <span style="font-weight:400;color:var(--muted);font-size:14px">— cheapest</span></h3><div class="price">44,283<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Master · double · 4 left</b></div>
+      <div><span>Board</span><b>Jan 3 · hotel pickup 06:00</b></div>
+      <div><span>Off</span><b>Jan 6 · hotel ~17:30</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/lapat">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/cabin/9086/line_album_lapat-2024_241013_2.._.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Master cabin · double bed" loading="lazy"><figcaption>Master cabin · double bed · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Dec 31–Jan 1</li><li class="arr">→</li><li>Khao Lak Jan 2</li><li class="arr">→</li><li class="sea">Boat Jan 3–6</li><li class="arr">→</li><li>Phuket Jan 7</li><li class="arr">→</li><li>Bangkok Jan 8–9</li><li class="arr">→</li><li>Home Jan 10</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Dec 30 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202026-12-30%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">7,217</td></tr>
+            <tr class="dom"><td>Jan 2 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202027-01-02%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai AirAsia 16:50→18:25 ↗</a></td><td class="num">3,473</td></tr>
+            <tr class="dom"><td>Jan 7 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-07%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 21:05→22:35 ↗</a></td><td class="num">1,857</td></tr>
+            <tr class="intl"><td>Jan 10 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-10%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">3,866</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">16,413</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Master, double)</td><td class="num">23,470</td></tr>
+            <tr><td>Nitrox (~11 tanks)</td><td class="num">3,300</td></tr>
+            <tr><td>Park fee</td><td class="num">1,100</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">27,870</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <details class="also" id="also2"><summary><h2>Also checked <span class="sub">no double cabin · Dec 31 – Jan 6</span></h2><span class="chev"><span class="o">Show</span><span class="c">Hide</span></span></summary>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Boat</th><th>Dates checked</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Dolphin Queen</td><td>Jan 2</td><td>Only 1 space left</td></tr>
+      <tr><td>Seatopia</td><td>Jan 3</td><td>Only 1 space left</td></tr>
+      <tr><td>Mandarin Queen 9</td><td>Jan 3</td><td>Only 1 space left</td></tr>
+      <tr><td>Marco Polo</td><td>Jan 1</td><td>Only 1 space left</td></tr>
+      <tr><td>Aqua</td><td>Jan 2</td><td>Full</td></tr>
+      <tr><td>Sawasdee Fasai</td><td>Dec 30</td><td>Full</td></tr>
+      <tr><td>Manta Queen 2</td><td>Jan 1</td><td>Double cabin full</td></tr>
+      <tr><td>Camic</td><td>Jan 5</td><td>Double cabins full (back Jan 9)</td></tr>
+      <tr><td>Thailand Aggressor</td><td>Jan 2</td><td>Back Jan 9 — too late to fly</td></tr>
+      <tr><td>Manta Queen 6 · Marco Polo</td><td>Jan 5–6</td><td>Back Jan 10 — too late to fly</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </details>
+  <footer>
+    Cabins and prices from liveaboard.com booking pages and flights from Google Flights, checked Nov 10, 2026. Fares and availability change quickly. Prices per person in TWD (1 THB ≈ 1 TWD); hotels, food, checked bags and tips not included.
+  </footer>
+</div>
+<div class="panel" data-p="3" hidden>
+  <h2>Three options <span class="sub">tap a name for details</span></h2>
+  <div class="cmp cmp3"><table>
+    <thead><tr><th></th><th class="a1"><a href="#c1"><b>Camic</b></a><span class="t">Cheapest · Richelieu day</span></th><th class="a2"><a href="#c2"><b>Bunmee 4</b></a><span class="t">Most night dives</span></th><th class="a3"><a href="#c3"><b>Deep Andaman Q.</b></a><span class="t">Highest rated</span></th></tr></thead>
+    <tbody>
+      <tr><td>Boat</td><td>Jan 10 – 14</td><td>Jan 9 – 13</td><td>Jan 11 – 15</td></tr>
+      <tr><td>Days / dives</td><td>5D4N · ~15</td><td>5D4N · ~15</td><td>5D4N · ~14</td></tr>
+      <tr><td>Rating</td><td>8.9 (77 reviews)</td><td>8.6 (40 reviews)</td><td>9.0 (129 reviews)</td></tr>
+      <tr><td>Bangkok</td><td>Jan 9 + Jan 16</td><td>Jan 9 a.m. + Jan 15–16</td><td>Jan 9–10 + Jan 16 eve</td></tr>
+      <tr><td>Bangkok hours</td><td>~72h (36 + 36)</td><td>~76h (16 + 60)</td><td>~80h (63 + 17)</td></tr>
+      <tr><td>Richelieu Rock</td><td>4 dives</td><td>3 dives</td><td>Up to 3</td></tr>
+      <tr><td>Night dives</td><td>Not stated</td><td>2</td><td>1</td></tr>
+      <tr><td>Nitrox</td><td>300 THB / tank</td><td>200 THB / tank</td><td>Not stated</td></tr>
+      <tr><td>Last dive → flight</td><td>~30h ✓</td><td>~29.5h ✓</td><td>~26h ✓</td></tr>
+    </tbody>
+  </table></div>
+
+  <section class="opt a1" id="c1">
+    <div class="head"><h3>Camic <span style="font-weight:400;color:var(--muted);font-size:14px">— cheapest</span></h3><div class="price">43,750<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Master upper · double · 4 left</b></div>
+      <div><span>Board</span><b>Jan 10 · Phuket pickup 14:00</b></div>
+      <div><span>Off</span><b>Jan 14 · ~16:00</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/camic">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/cabin/11157/62901.jpeg?tr=w-720,h-480,q-70,fo-auto" alt="Master cabin · double bed" loading="lazy"><figcaption>Master cabin · double bed · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Jan 9</li><li class="arr">→</li><li>Phuket Jan 10</li><li class="arr">→</li><li class="sea">Boat Jan 10–14</li><li class="arr">→</li><li>Phuket Jan 15</li><li class="arr">→</li><li>Bangkok Jan 16</li><li class="arr">→</li><li>Home Jan 17</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Jan 8 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202027-01-08%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">2,948</td></tr>
+            <tr class="dom"><td>Jan 10 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202027-01-10%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 10:20→11:50 ↗</a></td><td class="num">2,339</td></tr>
+            <tr class="dom"><td>Jan 15 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-15%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:35→21:05 ↗</a></td><td class="num">1,856</td></tr>
+            <tr class="intl"><td>Jan 17 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-17%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">4,150</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">11,293</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Master, double)</td><td class="num">26,957</td></tr>
+            <tr><td>Nitrox (~15 tanks)</td><td class="num">4,500</td></tr>
+            <tr><td>Park fee</td><td class="num">1,000</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">32,457</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt a2" id="c2">
+    <div class="head"><h3>Bunmee 4 <span style="font-weight:400;color:var(--muted);font-size:14px">— most night dives</span></h3><div class="price">55,761<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Horizon · double · 4 left</b></div>
+      <div><span>Board</span><b>Jan 9 · Khao Lak 19:30</b></div>
+      <div><span>Off</span><b>Jan 13 · Khao Lak 18:30</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/bunmee-4">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/boat/6223/cabins/10670/liveaboard-bunmee-4--horizon-double.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Horizon double cabin" loading="lazy"><figcaption>Horizon double cabin · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Jan 9 a.m.</li><li class="arr">→</li><li>Phuket Jan 9</li><li class="arr">→</li><li class="sea">Boat Jan 9–13</li><li class="arr">→</li><li>Phuket Jan 14</li><li class="arr">→</li><li>Bangkok Jan 15–16</li><li class="arr">→</li><li>Home Jan 17</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Jan 8 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202027-01-08%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">2,948</td></tr>
+            <tr class="dom"><td>Jan 9 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202027-01-09%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai AirAsia 14:35→15:55 ↗</a></td><td class="num">1,658</td></tr>
+            <tr class="dom"><td>Jan 14 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-14%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:40→21:10 ↗</a></td><td class="num">1,856</td></tr>
+            <tr class="intl"><td>Jan 17 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-17%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">4,150</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">10,612</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Horizon, double)</td><td class="num">39,749</td></tr>
+            <tr><td>Nitrox (~15 tanks)</td><td class="num">3,000</td></tr>
+            <tr><td>Fuel surcharge</td><td class="num">1,400</td></tr>
+            <tr><td>Park fee</td><td class="num">1,000</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">45,149</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="opt a3" id="c3">
+    <div class="head"><h3>Deep Andaman Queen <span style="font-weight:400;color:var(--muted);font-size:14px">— highest rated</span></h3><div class="price">60,496<small>TWD</small></div></div>
+    <div class="meta">
+      <div><span>Cabin</span><b>Deluxe ocean front · queen · 4 left</b></div>
+      <div><span>Board</span><b>Jan 11 · HKT airport 17:00</b></div>
+      <div><span>Off</span><b>Jan 15 · pier 13:00</b></div>
+      <div><span>Booking</span><b><a href="https://www.liveaboard.com/diving/thailand/deep-andaman-queen">liveaboard.com</a></b></div>
+    </div>
+    <figure class="cabin"><img src="https://img.liveaboard.com/picture_library/cabin/9482/cabin_-double-ocean-1-.jpg?tr=w-720,h-480,q-70,fo-auto" alt="Deluxe ocean front · queen bed" loading="lazy"><figcaption>Deluxe ocean front · queen bed · photo: liveaboard.com</figcaption></figure>
+    <ul class="timeline">
+      <li>Bangkok Jan 9–10</li><li class="arr">→</li><li>Phuket Jan 11</li><li class="arr">→</li><li class="sea">Boat Jan 11–15</li><li class="arr">→</li><li>Phuket Jan 16</li><li class="arr">→</li><li>Bangkok Jan 16</li><li class="arr">→</li><li>Home Jan 17</li>
+    </ul>
+    <div class="two">
+      <div>
+        <p class="label">Flights <span style="text-transform:none;letter-spacing:0;font-weight:400">· tap to open Google Flights</span></p>
+        <table class="tbl">
+          <tbody>
+            <tr class="intl"><td>Jan 8 TPE→BKK<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20TPE%20to%20BKK%20on%202027-01-08%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 19:50→22:50 ↗</a></td><td class="num">2,948</td></tr>
+            <tr class="dom"><td>Jan 11 BKK→HKT<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20HKT%20on%202027-01-11%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 13:15→14:50 ↗</a></td><td class="num">2,339</td></tr>
+            <tr class="dom"><td>Jan 16 HKT→BKK<span class="pill d">DOM</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20HKT%20to%20BKK%20on%202027-01-16%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai AirAsia 14:05→15:45 ↗</a></td><td class="num">1,822</td></tr>
+            <tr class="intl"><td>Jan 17 BKK→TPE<span class="pill i">INTL</span></td><td><a class="gf" href="https://www.google.com/travel/flights?q=Flights%20from%20BKK%20to%20TPE%20on%202027-01-17%20one%20way&amp;curr=TWD&amp;hl=zh-TW&amp;gl=TW" target="_blank" rel="noopener">Thai VietJet 09:05→13:45 ↗</a></td><td class="num">4,150</td></tr>
+            <tr class="tot"><td>Flights</td><td></td><td class="num">11,259</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="label">Boat cost</p>
+        <table class="tbl">
+          <tbody>
+            <tr><td>Cabin (Deluxe, queen)</td><td class="num">47,137</td></tr>
+            <tr><td>Nitrox</td><td class="num">Not stated</td></tr>
+            <tr><td>Park fee</td><td class="num">2,100</td></tr>
+            <tr class="tot"><td>Boat total</td><td class="num">49,237</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <details class="also" id="also3"><summary><h2>Also checked <span class="sub">no double cabin · Jan 9 – 13</span></h2><span class="chev"><span class="o">Show</span><span class="c">Hide</span></span></summary>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Boat</th><th>Dates checked</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>The Junk</td><td>Jan 9</td><td>Double full (triple cabin only, 67,252)</td></tr>
+      <tr><td>Marco Polo</td><td>Jan 10</td><td>Bunk-bed cabins only</td></tr>
+      <tr><td>Aqua</td><td>Jan 12</td><td>Full</td></tr>
+      <tr><td>Gentle Giant · Bavaria</td><td>Jan 9</td><td>Full</td></tr>
+      <tr><td>Blue Dolphin · Explorer</td><td>Jan 10</td><td>Full</td></tr>
+      <tr><td>Krishna 2 · Krishna 3</td><td>Jan 12</td><td>Full</td></tr>
+      <tr><td>Mandarin Queen 9 · Andaman</td><td>Jan 13</td><td>Full</td></tr>
+      <tr><td>Thailand Aggressor</td><td>Jan 9</td><td>Full</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </details>
+  <footer>
+    Cabins and prices from liveaboard.com booking pages and flights from Google Flights, checked Nov 10, 2026. Fares and availability change quickly. Prices per person in TWD (1 THB ≈ 1 TWD); hotels, food, checked bags and tips not included.
+  </footer>
+</div>
+</div>
+<script>
+(function(){
+  function show(t){
+    document.querySelectorAll('.tab').forEach(function(b){var on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+    document.querySelectorAll('[data-p]').forEach(function(e){e.hidden=e.dataset.p!==t});
+    try{history.replaceState(null,'',t==='4'?'#before-christmas':t==='3'?'#january':t==='2'?'#newyear':'#christmas')}catch(e){}
+  }
+  document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.t);window.scrollTo({top:0,behavior:'smooth'})})});
+  if(/newyear/.test(location.hash))show('2');if(/january/.test(location.hash))show('3');if(/before-christmas/.test(location.hash))show('4');
+})();
+</script>
+</body>
+</html>

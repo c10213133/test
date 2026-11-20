@@ -1,0 +1,39 @@
+{
+"checked": "Nov 20, 2026 02:04",
+"rows": [
+{
+"k": "J|TPE|2027-01-08|2027-01-18|泰越捷航空|19:50",
+"adj": 0,
+"air": "Thai VietJet",
+"from": "Taipei",
+"out": "Jan 8 19:50 → 22:50",
+"ret": "Jan 18 01:50 → 06:30 (red-eye)",
+"price": 7213,
+"bags": false,
+"cur": false
+},
+{
+"k": "J|TPE|2027-01-08|2027-01-18|中華航空|22:30",
+"adj": 0,
+"air": "China Airlines",
+"from": "Taipei",
+"out": "Jan 8 22:30 → Jan 9 01:35",
+"ret": "Jan 18 02:35 → 07:15 (red-eye) · used in boat totals above",
+"price": 9935,
+"bags": true,
+"cur": true,
+"ok": true
+},
+{
+"k": "J|TPE|2027-01-08|2027-01-18|長榮航空|20:45",
+"adj": 95,
+"air": "EVA Air",
+"from": "Taipei",
+"out": "Jan 8 20:45 → 23:40",
+"ret": "Jan 18 02:15 → 06:50 (red-eye)",
+"price": 10332,
+"bags": true,
+"cur": false
+}
+]
+}

@@ -1,0 +1,119 @@
+{
+"checked": "Nov 20, 2026 02:04",
+"rows": [
+{
+"k": "TPE|2026-12-30|2027-01-10|泰越捷航空|19:50",
+"adj": 283,
+"air": "Thai VietJet",
+"from": "Taipei",
+"out": "Dec 30 19:50 → 22:50",
+"ret": "Jan 10 09:05 → 13:45",
+"price": 11323,
+"bags": false,
+"cur": false
+},
+{
+"k": "TPE|2026-12-30|2027-01-11|泰越捷航空|19:50",
+"air": "Thai VietJet",
+"from": "Taipei",
+"out": "Dec 30 19:50 → 22:50",
+"ret": "Jan 11 01:50 → 06:30 (red-eye)",
+"price": 10748,
+"bags": false,
+"cur": false
+},
+{
+"k": "TPE|2026-12-31|2027-01-11|長榮航空|09:45",
+"air": "EVA Air",
+"from": "Taipei",
+"out": "Dec 31 09:45 → 12:50",
+"ret": "Jan 11 02:15 → 06:50 (red-eye)",
+"price": 14497,
+"bags": true,
+"best": true,
+"ok": true,
+"cur": false
+},
+{
+"k": "TPE|2026-12-31|2027-01-11|中華航空|10:05",
+"air": "China Airlines",
+"from": "Taipei",
+"out": "Dec 31 10:05 → 13:05",
+"ret": "Jan 11 02:35 → 07:15 (red-eye) · used in boat totals above",
+"price": 13969,
+"bags": true,
+"ok": true,
+"cur": true
+},
+{
+"k": "KHH|2026-12-30|2027-01-10|THAI|17:15",
+"air": "Thai Airways",
+"from": "Kaohsiung",
+"out": "Dec 30 17:15 → 19:45",
+"ret": "Jan 10 11:55 → 16:15",
+"price": 15680,
+"bags": true,
+"cur": false
+},
+{
+"k": "TPE|2026-12-30|2027-01-11|中華航空|22:30",
+"air": "China Airlines",
+"from": "Taipei",
+"out": "Dec 30 22:30 → Dec 31 01:35",
+"ret": "Jan 11 02:35 → 07:15 (red-eye)",
+"price": 14604,
+"bags": true,
+"cur": false
+},
+{
+"k": "TPE|2026-12-31|2027-01-10|星宇航空|09:50",
+"air": "Starlux",
+"from": "Taipei",
+"out": "Dec 31 09:50 → 12:55",
+"ret": "Jan 10 17:40 → 22:30",
+"price": 20872,
+"bags": true,
+"cur": false
+},
+{
+"k": "TPE|2026-12-30|2027-01-11|長榮航空|20:45",
+"air": "EVA Air",
+"from": "Taipei",
+"out": "Dec 30 20:45 → 23:40",
+"ret": "red-eye home (from-price)",
+"price": 22548,
+"bags": true,
+"cur": false
+},
+{
+"k": "TPE-DMK|2026-12-30|2027-01-10|泰國亞洲航空|18:40",
+"air": "Thai AirAsia",
+"from": "Taipei ⇄ Don Mueang (DMK)",
+"out": "Dec 30 18:40 → 21:30",
+"ret": "Jan 10 07:45 → 12:25",
+"price": 11464,
+"bags": false,
+"cur": false
+},
+{
+"k": "KHH-DMK|2026-12-30|2027-01-10|泰國獅航|19:05",
+"air": "Thai Lion Air",
+"from": "Kaohsiung ⇄ Don Mueang (DMK)",
+"out": "Dec 30 19:05 → 21:30",
+"ret": "Jan 10 05:40 → 10:10",
+"price": 11059,
+"bags": false,
+"cur": false
+},
+{
+"k": "KHH-DMK|2026-12-30|2027-01-10|泰國亞洲航空|18:00",
+"air": "Thai AirAsia",
+"from": "Kaohsiung ⇄ Don Mueang (DMK)",
+"out": "Dec 30 18:00 → 20:35",
+"ret": "Jan 10 02:35 → 07:00 (red-eye)",
+"price": 13028,
+"bags": false,
+"cur": false
+}
+]
+}
