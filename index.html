@@ -1175,9 +1175,7 @@ var SITES={surin:['Surin Islands',64,38,'Shallow hard-coral reefs near the Myanm
   tachai:['Koh Tachai',84,118,'Offshore pinnacle with big schools and currents.'],bon:['Koh Bon',104,160,'Ridge and pinnacle known for manta rays.'],
   similan:['Similan Islands',62,222,'Nine granite islands, boulders and clear water.'],boonsung:['Boonsung Wreck',226,190,'Old tin dredger close to shore, dense fish life.']};
 var NOTE={b2:'Listed for this trip, but the itinerary does not say which day or how many dives.'};
-var ROUTE={b2:['similan','bon','surin','richelieu'],n5:['bon','richelieu'],n6:['similan','bon','tachai','richelieu'],b1:['similan','richelieu'],
-  j1:['bon','tachai','richelieu','boonsung'],j2:['similan','bon','tachai','richelieu','boonsung'],c1:['similan','bon','tachai','richelieu','surin'],
-  j4:['similan','bon','tachai','richelieu'],j5:['similan','bon','tachai','richelieu'],c3:['similan'],c2:['similan','richelieu']};
+var ROUTE={"b2": ["similan", "bon", "surin", "richelieu"], "n5": ["bon", "tachai", "richelieu", "surin", "boonsung"], "n6": ["similan", "bon", "tachai", "richelieu", "boonsung"], "b1": ["similan", "bon", "tachai", "richelieu", "surin"], "j1": ["bon", "tachai", "richelieu", "boonsung"], "j2": ["similan", "bon", "tachai", "richelieu", "boonsung"], "c1": ["similan", "bon", "tachai", "richelieu", "surin"], "j4": ["similan", "bon", "tachai", "richelieu"], "j5": ["similan", "bon", "tachai", "richelieu", "boonsung"], "c3": ["similan", "bon", "tachai", "richelieu", "surin", "boonsung"], "c2": ["similan", "bon", "tachai", "richelieu", "surin"]};
 var RULES={'Boat / person':['min','cheapest'],'Rating':['max','top rated'],'Richelieu Rock':['max','most'],'Night dives':['max','most'],'Days / dives':['maxd','most dives'],'Built':['new','new'],'Total / person':['min','']};
 function val(rule,t){if(rule[0]==='new')return /\(new\)/.test(t)?1:0;if(rule[0]==='maxd'){var m=t.match(/~\s*(\d+)/);return m?+m[1]:NaN}return num(t)}
 
@@ -1263,5 +1261,19 @@ mb.addEventListener('click',function(e){var on=!document.body.classList.contains
 })();
 </script>
 <!-- /cute-addon -->
+<!-- cute-addon mobile tidy (11-26): compact floating buttons on phones; kept separate so cute-addon.html can be replaced as-is -->
+<style>
+@media(max-width:640px){
+  .lb-moon{width:42px;height:42px;padding:0!important;gap:0;justify-content:center;left:10px;bottom:calc(12px + env(safe-area-inset-bottom));border-width:2px;box-shadow:2px 2px 0 var(--brown)}
+  .lb-moon .t1,.lb-moon .t2,body.lb-night .lb-moon .t2{display:none!important}
+  .lb-moon svg{width:22px;height:22px}
+  .lb-depth{bottom:calc(12px + env(safe-area-inset-bottom))!important;right:10px!important}
+  .lb-diver{width:38px!important;height:38px!important;margin:-38px 0 0 -38px!important;font-size:10px!important;box-shadow:2px 2px 0 var(--brown)!important}
+  .lb-depth.on{opacity:0;pointer-events:none}
+  .lb-depth.on.lb-moving{opacity:.92;pointer-events:auto}
+  body{padding-bottom:64px}
+}
+</style>
+<script>(function(){var t,g;addEventListener('scroll',function(){g=g||document.querySelector('.lb-depth');if(!g)return;g.classList.add('lb-moving');clearTimeout(t);t=setTimeout(function(){g.classList.remove('lb-moving')},1500)},{passive:true})})();</script>
 </body>
 </html>
