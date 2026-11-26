@@ -1261,19 +1261,21 @@ mb.addEventListener('click',function(e){var on=!document.body.classList.contains
 })();
 </script>
 <!-- /cute-addon -->
-<!-- cute-addon mobile tidy (11-26): compact floating buttons on phones; kept separate so cute-addon.html can be replaced as-is -->
+<!-- cute-addon mobile dock (11-26): on phones the night-mode button and the depth badge live in a small bar at the bottom
+     that the page never scrolls under, so they never overlap content. Kept separate so cute-addon.html can be replaced as-is. -->
 <style>
 @media(max-width:640px){
-  .lb-moon{width:42px;height:42px;padding:0!important;gap:0;justify-content:center;left:10px;bottom:calc(12px + env(safe-area-inset-bottom));border-width:2px;box-shadow:2px 2px 0 var(--brown)}
+  .lb-dock{position:fixed;left:0;right:0;bottom:0;height:calc(52px + env(safe-area-inset-bottom));z-index:29;
+    background:var(--cream);border-top:2.5px solid var(--brown);box-shadow:0 -3px 0 rgba(0,0,0,.06)}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+  .lb-moon{width:40px;height:40px;padding:0!important;gap:0;justify-content:center;left:12px;bottom:calc(6px + env(safe-area-inset-bottom));
+    border-width:2px;box-shadow:2px 2px 0 var(--brown)}
   .lb-moon .t1,.lb-moon .t2,body.lb-night .lb-moon .t2{display:none!important}
   .lb-moon svg{width:22px;height:22px}
-  .lb-depth{bottom:calc(12px + env(safe-area-inset-bottom))!important;right:10px!important}
-  .lb-diver{width:38px!important;height:38px!important;margin:-38px 0 0 -38px!important;font-size:10px!important;box-shadow:2px 2px 0 var(--brown)!important}
-  .lb-depth.on{opacity:0;pointer-events:none}
-  .lb-depth.on.lb-moving{opacity:.92;pointer-events:auto}
-  body{padding-bottom:64px}
+  .lb-depth,.lb-depth.on{opacity:1!important;pointer-events:auto!important;bottom:calc(46px + env(safe-area-inset-bottom))!important;right:12px!important}
+  .lb-diver{width:40px!important;height:40px!important;margin:0 0 0 -40px!important;font-size:10px!important;box-shadow:2px 2px 0 var(--brown)!important}
 }
 </style>
-<script>(function(){var t,g;addEventListener('scroll',function(){g=g||document.querySelector('.lb-depth');if(!g)return;g.classList.add('lb-moving');clearTimeout(t);t=setTimeout(function(){g.classList.remove('lb-moving')},1500)},{passive:true})})();</script>
+<script>(function(){var d=document.createElement('div');d.className='lb-dock';d.setAttribute('aria-hidden','true');document.body.appendChild(d)})();</script>
 </body>
 </html>
